@@ -1,5 +1,11 @@
+import SearchInput from "../../atoms/input/search-input";
+
 const SearchBar = () => {
-  return <>SearchBar</>;
+  return (
+    <>
+      <SearchInput />
+    </>
+  );
 };
 
 export default SearchBar;

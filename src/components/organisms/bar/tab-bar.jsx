@@ -1,5 +1,12 @@
+import Tab from "../../atoms/tab/tab";
+
 const TabBar = () => {
-  return <>TabBar</>;
+  return (
+    <>
+      <Tab />
+      <Tab />
+    </>
+  );
 };
 
 export default TabBar;
