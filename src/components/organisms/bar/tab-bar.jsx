@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import Tab from "../../atoms/tab/tab";
 
-const TabBar = () => {
+const TabBar = ({ setItemType }) => {
   const [tabIdx, setTabIdx] = useState(0);
 
   const tabs = [
@@ -17,6 +17,7 @@ const TabBar = () => {
     const idx = +target.closest("button").dataset.tab;
     if (idx !== undefined && idx !== tabIdx) {
       setTabIdx(idx);
+      setItemType(String.fromCharCode(97 + idx));
     }
   };
 

@@ -33,11 +33,15 @@ const stSearchInput = css`
   }
 `;
 
-const SearchInput = () => {
+const SearchInput = ({ inputChangeHandler }) => {
   return (
     <div className={stSearchInput}>
       <span className="icon">😀</span>
-      <input type="search" placeholder="검색어를 입력하세요" />
+      <input
+        onChange={inputChangeHandler}
+        type="search"
+        placeholder="검색어를 입력하세요"
+      />
     </div>
   );
 };

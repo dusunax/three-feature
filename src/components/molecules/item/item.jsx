@@ -33,17 +33,15 @@ const itemStyle = css`
   }
 `;
 
-const Item = () => {
+const Item = (props) => {
+  const { content, createdAt, id, title, type } = props.itemProps;
+
   return (
     <div className={itemStyle}>
       <h4 className="title">
-        <span className="num">0.</span> title
+        <span className="num">{id}.</span> {title}
       </h4>
-      <p>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima quidem,
-        aspernatur suscipit eaque, laboriosam nisi itaque totam quibusdam ipsum
-        similique temporibus eos saepe! Distinctio molestias necessitatibus
-      </p>
+      <p>{content}</p>
     </div>
   );
 };
