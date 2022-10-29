@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/css";
 
 import Item from "../../molecules/item/item";
@@ -12,7 +13,12 @@ const itemContainerStyle = css`
 `;
 
 const ItemContainer = ({ fetchItems, itemList, itemType }) => {
+  const navigate = useNavigate();
   const itemContainerRef = useRef();
+
+  const itemContainerHandler = (item) => {
+    navigate("/post", { state: { item } });
+  };
 
   // 함수 분리
   // 1. 높이값을 가져오기
@@ -46,7 +52,13 @@ const ItemContainer = ({ fetchItems, itemList, itemType }) => {
   return (
     <div ref={itemContainerRef} className={itemContainerStyle}>
       {itemList.map((item) => {
-        return <Item key={item.id} itemProps={{ ...item }} />;
+        return (
+          <Item
+            key={item.id}
+            itemProps={{ ...item }}
+            itemContainerHandler={itemContainerHandler}
+          />
+        );
       })}
     </div>
   );

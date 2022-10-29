@@ -1,9 +1,11 @@
-import Feature from "./pages/feature";
+import GradientBar from "./components/atoms/bar/gradient-bar";
+import Router from "./shared/router";
 
 function App() {
   return (
     <div className="App">
-      <Feature />
+      <GradientBar />
+      <Router />
     </div>
   );
 }

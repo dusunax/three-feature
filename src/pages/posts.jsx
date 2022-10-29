@@ -7,7 +7,7 @@ import SearchBar from "../components/organisms/bar/search-bar";
 import TabBar from "../components/organisms/bar/tab-bar";
 import ItemContainer from "../components/organisms/container/item-container";
 
-const Feature = () => {
+const Posts = () => {
   const [itemType, setItemType] = useState("a");
   const [itemList, setItemList] = useState([]);
   const [page, setPage] = useState(0);
@@ -36,8 +36,6 @@ const Feature = () => {
 
   return (
     <>
-      <GradientBar />
-
       <div
         className={css`
           padding: 2.5rem;
@@ -60,4 +58,4 @@ const Feature = () => {
   );
 };
 
-export default Feature;
+export default Posts;

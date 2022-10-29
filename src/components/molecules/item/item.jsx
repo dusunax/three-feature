@@ -33,15 +33,16 @@ const itemStyle = css`
   }
 `;
 
-const Item = (props) => {
-  const { content, createdAt, id, title, type } = props.itemProps;
+const Item = ({ itemContainerHandler, itemProps }) => {
+  const { content, createdAt, id, title, type } = itemProps;
 
   return (
-    <div className={itemStyle}>
-      <h4 className="title">
-        <span className="num">{id}.</span> {title}
+    <div className={itemStyle} onClick={() => itemContainerHandler(itemProps)}>
+      <h4>
+        <strong className="num">{id}.</strong>
+        <span className="title">{title}</span>
       </h4>
-      <p>{content}</p>
+      <p className="content">{content}</p>
     </div>
   );
 };
