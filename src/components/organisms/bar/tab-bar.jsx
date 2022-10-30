@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { sessionStoreItemObj } from "../../../utils/session-store-item-obj";
 
 import Tab from "../../atoms/tab/tab";
 
-const TabBar = ({ setItemProps }) => {
-  const [tabIdx, setTabIdx] = useState(0);
+const TabBar = ({ setItemProps, itemType, setPage }) => {
+  const itemIndex = itemType.charCodeAt() - 97;
+  const [tabIdx, setTabIdx] = useState(itemIndex);
 
   const tabs = [
     { name: "A Post", id: 0 },
@@ -20,8 +22,9 @@ const TabBar = ({ setItemProps }) => {
       setItemProps((prev) => ({
         ...prev,
         itemType: String.fromCharCode(97 + idx),
-        page: 0,
       }));
+      setPage(0);
+      sessionStoreItemObj({ itemType: String.fromCharCode(97 + idx), page: 0 });
     }
   };
 

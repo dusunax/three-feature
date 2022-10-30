@@ -5,8 +5,8 @@ const sessionStoreItemObj = (itemObj) => {
 };
 
 const sessionGetItemObj = () => {
-  const { itemType, page, keyword } = sessionStorage;
-  return { itemType, page: +page, keyword };
+  const { itemType, page, keyword, scrollY } = sessionStorage;
+  return { itemType, page: +page, keyword, scrollY: +scrollY };
 };
 
 export { sessionStoreItemObj, sessionGetItemObj };

@@ -1,8 +1,5 @@
 function throttle(cb, timerOpt) {
-  const { delay = 1000, timer, setTimer } = timerOpt;
-
-  let shouldWait = false;
-  let waitingArgs;
+  let { delay = 1000, shouldWait, waitingArgs } = timerOpt;
 
   const timoutFunc = () => {
     if (waitingArgs === null) {

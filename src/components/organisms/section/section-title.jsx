@@ -1,9 +1,10 @@
+import React from "react";
 import { css } from "@emotion/css";
 
 import TitleOne from "../../atoms/title/title-h1";
 import TitleThree from "../../atoms/title/title-h3";
 
-const SectionTitle = () => {
+const SectionTitle = React.memo(() => {
   return (
     <div
       className={css`
@@ -16,6 +17,6 @@ const SectionTitle = () => {
       <TitleThree />
     </div>
   );
-};
+});
 
 export default SectionTitle;

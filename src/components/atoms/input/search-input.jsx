@@ -37,7 +37,7 @@ const SearchInput = ({ inputChangeHandler, keyword }) => {
   return (
     <div className={stSearchInput}>
       <label htmlFor="search" className="icon">
-        😀
+        🔍
       </label>
       <input
         id="search"

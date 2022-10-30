@@ -1,16 +1,15 @@
-import { useState } from "react";
+import React, { useRef } from "react";
 import SearchInput from "../../atoms/input/search-input";
 
 import { debounce } from "../../../utils/debounce-func";
 import { sessionStoreItemObj } from "../../../utils/session-store-item-obj";
 
-const SearchBar = ({ fetchItems, itemProps, setItemProps }) => {
-  const { keyword, itemType } = itemProps;
-  const [timer, setTimer] = useState();
-  const timerOpt = { delay: 150, timer, setTimer };
+const SearchBar = ({ fetchItems, keyword, setKeyword }) => {
+  const timeout = useRef(null);
+  const timerOpt = { delay: 150, timeout };
 
   const searchItemList = (keyword) => {
-    const args = { keyword, itemType };
+    const args = { keyword };
     fetchItems(args);
   };
 
@@ -22,7 +21,8 @@ const SearchBar = ({ fetchItems, itemProps, setItemProps }) => {
     const newKeywordObj = { keyword: inputText };
 
     searchItemList(inputText);
-    setItemProps((prev) => ({ ...prev, ...newKeywordObj }));
+    setKeyword(inputText);
+
     sessionStoreItemObj(newKeywordObj);
   }, timerOpt);
 
@@ -33,4 +33,4 @@ const SearchBar = ({ fetchItems, itemProps, setItemProps }) => {
   );
 };
 
-export default SearchBar;
+export const MemoSearchBar = React.memo(SearchBar);
