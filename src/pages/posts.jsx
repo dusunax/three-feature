@@ -1,22 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { css } from "@emotion/css";
 
-import GradientBar from "../components/atoms/bar/gradient-bar";
 import SectionTitle from "../components/organisms/section/section-title";
 import SearchBar from "../components/organisms/bar/search-bar";
 import TabBar from "../components/organisms/bar/tab-bar";
 import ItemContainer from "../components/organisms/container/item-container";
 
+import {
+  sessionGetItemObj,
+  sessionStoreItemObj,
+} from "../utils/session-store-item-obj";
+
 const Posts = () => {
-  const [itemType, setItemType] = useState("a");
   const [itemList, setItemList] = useState([]);
-  const [page, setPage] = useState(0);
+  const defaultValue = {
+    itemType: "a",
+    page: 0,
+    keyword: "",
+  };
+  const [itemProps, setItemProps] = useState(defaultValue);
+  const { itemType, page, keyword } = itemProps;
+
+  const compareValues = (prevStorage, currState) => {
+    if (prevStorage === currState) return;
+    if (currState === {}) setItemProps(defaultValue);
+
+    let isDefault = true;
+    for (const key in currState) {
+      if (currState[key] !== defaultValue[key]) {
+        isDefault = false;
+        break;
+      }
+    }
+    if (isDefault) {
+      sessionStoreItemObj(defaultValue);
+      return;
+    }
+
+    loadPrevState(prevStorage);
+  };
+
+  const loadPrevState = (prevStorage) => {
+    setItemProps((prev) => ({
+      ...prev,
+      ...prevStorage,
+    }));
+  };
 
   const fetchItems = async (args) => {
-    const { itemType, keyword } = args;
+    const { itemType = "a", keyword = "", page = 0 } = args;
     const API_URL = process.env.REACT_APP_API;
+    let api = `${API_URL}/${itemType}-posts?`;
 
-    let api = `${API_URL}/${itemType}-posts?page=${page}`;
+    if (page >= 0) {
+      api += `page=${page}`;
+    }
     if (keyword) api += `&search=${keyword}`;
 
     const options = {
@@ -26,13 +64,20 @@ const Posts = () => {
       },
     };
 
-    let resList = await (await fetch(api, options)).json();
+    let resList = await (
+      await fetch(api, options).catch((err) => console.log(err))
+    ).json();
 
     if (resList) {
       setItemList(resList);
-      setPage((prev) => prev++);
+      setItemProps((prev) => ({ ...prev, page: prev.page++ }));
     }
   };
+
+  useEffect(() => {
+    const prevObj = sessionGetItemObj();
+    compareValues(prevObj, itemProps);
+  }, []);
 
   return (
     <>
@@ -46,12 +91,16 @@ const Posts = () => {
         `}
       >
         <SectionTitle />
-        <SearchBar itemType={itemType} fetchItems={fetchItems} />
-        <TabBar setItemType={setItemType} />
+        <SearchBar
+          fetchItems={fetchItems}
+          setItemProps={setItemProps}
+          itemProps={itemProps}
+        />
+        <TabBar setItemProps={setItemProps} />
         <ItemContainer
           fetchItems={fetchItems}
           itemList={itemList}
-          itemType={itemType}
+          itemProps={itemProps}
         />
       </div>
     </>

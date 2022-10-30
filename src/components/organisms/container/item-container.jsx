@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/css";
 
 import Item from "../../molecules/item/item";
+import { throttle } from "../../../utils/throttle-func";
 
 const itemContainerStyle = css`
   padding: 1.25rem;
@@ -12,7 +13,8 @@ const itemContainerStyle = css`
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 `;
 
-const ItemContainer = ({ fetchItems, itemList, itemType }) => {
+const ItemContainer = ({ fetchItems, itemList, itemProps }) => {
+  const { itemType } = itemProps;
   const navigate = useNavigate();
   const itemContainerRef = useRef();
 
@@ -38,12 +40,11 @@ const ItemContainer = ({ fetchItems, itemList, itemType }) => {
   };
 
   const getItemList = () => {
-    const args = { itemType };
-    fetchItems(args);
+    fetchItems({ itemType: itemType });
   };
 
   useEffect(() => {
-    getItemList();
+    getItemList(itemType);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);

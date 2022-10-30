@@ -33,14 +33,19 @@ const stSearchInput = css`
   }
 `;
 
-const SearchInput = ({ inputChangeHandler }) => {
+const SearchInput = ({ inputChangeHandler, keyword }) => {
   return (
     <div className={stSearchInput}>
-      <span className="icon">😀</span>
+      <label htmlFor="search" className="icon">
+        😀
+      </label>
       <input
+        id="search"
         onChange={inputChangeHandler}
         type="search"
         placeholder="검색어를 입력하세요"
+        defaultValue={keyword}
+        autoComplete="off"
       />
     </div>
   );
