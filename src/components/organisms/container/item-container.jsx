@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/css";
 
@@ -18,18 +18,17 @@ const itemContainerStyle = css`
 const ItemContainer = ({
   fetchItems,
   itemList,
-  itemProps,
-  setItemProps,
   page,
   setPage,
-  setScrollY,
+  itemType,
+  itemEnd,
+  keyword,
 }) => {
-  const { itemType } = itemProps;
   const navigate = useNavigate();
   const itemContainerRef = useRef();
 
   const timeout = useRef(null);
-  const timerOpt = { delay: 500, timeout };
+  const timerOpt = { delay: 150, timeout };
 
   const itemContainerHandler = (item) => {
     navigate("/post", { state: { item } });
@@ -40,22 +39,22 @@ const ItemContainer = ({
   // 2. 높이값 비교하기
   // 3. api 요청 => state에 data반영
 
-  const handleScroll = debounce(() => {
+  const onscrollHandler = debounce(() => {
     console.log("스크롤 핸들러");
-    const { offsetTop, offsetHeight } = itemContainerRef.current;
-    const o_bottom = offsetTop + offsetHeight;
-    const { scrollY, innerHeight } = window;
-    const w_bottom = scrollY + innerHeight;
-    const threshold = 300;
-    sessionStoreItemObj({ scrollY });
+    if (itemContainerRef.current) {
+      const { offsetTop, offsetHeight } = itemContainerRef.current;
+      const o_bottom = offsetTop + offsetHeight;
+      const { scrollY, innerHeight } = window;
+      const w_bottom = scrollY + innerHeight;
+      const threshold = 300;
+      sessionStoreItemObj({ scrollY });
 
-    if (w_bottom > o_bottom - threshold) {
-      console.log("fetching!");
-      const newPage = { itemType, page: page + 1 };
+      if (w_bottom > o_bottom - threshold && !itemEnd) {
+        console.log("fetching!");
 
-      getItemList(newPage);
-      setPage((prev) => prev + 1);
-      sessionStoreItemObj(newPage);
+        setPage(page + 1);
+        sessionStoreItemObj({ page: page + 1 });
+      }
     }
   }, timerOpt);
 
@@ -64,14 +63,14 @@ const ItemContainer = ({
   };
 
   useEffect(() => {
-    getItemList({ itemType, page });
+    getItemList({ itemType, page, keyword });
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onscrollHandler);
     return () => {
       if (timeout.current) clearTimeout(timeout);
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", onscrollHandler);
     };
-  }, [itemType]);
+  }, [itemType, page, keyword]);
 
   return (
     <div ref={itemContainerRef} className={itemContainerStyle}>
@@ -81,6 +80,7 @@ const ItemContainer = ({
             key={Math.random().toFixed(5) + item.id}
             itemProps={{ ...item }}
             itemContainerHandler={itemContainerHandler}
+            clip={true}
           />
         );
       })}

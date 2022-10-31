@@ -3,8 +3,9 @@ import { sessionStoreItemObj } from "../../../utils/session-store-item-obj";
 
 import Tab from "../../atoms/tab/tab";
 
-const TabBar = ({ setItemProps, itemType, setPage }) => {
-  const itemIndex = itemType.charCodeAt() - 97;
+const TabBar = ({ setItemType, itemType, setPage }) => {
+  const charCodeGap = 97;
+  const itemIndex = itemType.charCodeAt() - charCodeGap;
   const [tabIdx, setTabIdx] = useState(itemIndex);
 
   const tabs = [
@@ -12,24 +13,21 @@ const TabBar = ({ setItemProps, itemType, setPage }) => {
     { name: "B Post", id: 1 },
   ];
 
-  const onClickHandler = (e) => {
+  const onclickHandler = (e) => {
     const target = e.target;
     if (target.className === "btn-box") return;
 
     const idx = +target.closest("button").dataset.tab;
     if (idx !== undefined && idx !== tabIdx) {
-      setTabIdx(idx);
-      setItemProps((prev) => ({
-        ...prev,
-        itemType: String.fromCharCode(97 + idx),
-      }));
       setPage(0);
+      setTabIdx(idx);
+      setItemType(String.fromCharCode(charCodeGap + idx));
       sessionStoreItemObj({ itemType: String.fromCharCode(97 + idx), page: 0 });
     }
   };
 
   return (
-    <div className="btn-box border-bottom" onClick={onClickHandler}>
+    <div className="btn-box border-bottom" onClick={onclickHandler}>
       {tabs.map((tab) => {
         const isTabOn = tabIdx === tab.id;
         return (

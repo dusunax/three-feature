@@ -44,7 +44,7 @@ const SearchInput = ({ inputChangeHandler, keyword }) => {
         onChange={inputChangeHandler}
         type="search"
         placeholder="검색어를 입력하세요"
-        defaultValue={keyword}
+        defaultValue={keyword ? keyword : ""}
         autoComplete="off"
       />
     </div>

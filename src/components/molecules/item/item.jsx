@@ -19,21 +19,21 @@ const itemStyle = css`
   .title {
     font-weight: 500;
   }
-
-  p {
-    height: 3.8rem;
-
-    overflow: hidden;
-    word-wrap: break-word;
-    text-overflow: ellipsis;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-  }
 `;
 
-const Item = ({ itemContainerHandler, itemProps }) => {
+const clipStyle = css`
+  height: 3.8rem;
+
+  overflow: hidden;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+`;
+
+const Item = ({ itemContainerHandler, itemProps, clip = false }) => {
   const { content, createdAt, id, title, type } = itemProps;
 
   return (
@@ -42,7 +42,7 @@ const Item = ({ itemContainerHandler, itemProps }) => {
         <strong className="num">{id}.</strong>
         <span className="title">{title}</span>
       </h4>
-      <p className="content">{content}</p>
+      <p className={clip ? clipStyle : ""}>{content}</p>
     </div>
   );
 };
