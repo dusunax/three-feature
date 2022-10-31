@@ -10,7 +10,7 @@ const TitleOne = () => {
         margin: 0;
       `}
     >
-      TitleOne
+      페이지
     </h1>
   );
 };

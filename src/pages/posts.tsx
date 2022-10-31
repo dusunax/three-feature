@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { css } from "@emotion/css";
 
 import MemoSectionTitle from "../components/organisms/section/section-title";
@@ -6,28 +6,55 @@ import SearchBar from "../components/organisms/bar/search-bar";
 import TabBar from "../components/organisms/bar/tab-bar";
 import ItemContainer from "../components/organisms/container/item-container";
 
+import ItemObj from "../models/item-obj";
+import ItemModel from "../models/item";
+
 import {
   sessionGetItemObj,
   sessionStoreItemObj,
 } from "../utils/session-store-item-obj";
 
-const defaultObj = {
-  page: 0,
+const defaultObj: ItemObj = {
+  page: -1,
   keyword: "",
   itemType: "a",
   scrollY: 0,
 };
 
-const Posts = ({ itemProps }) => {
+const Posts = ({
+  itemProps,
+  renderProps,
+}: {
+  itemProps: {
+    itemList: ItemModel[];
+    setItemList: Dispatch<SetStateAction<ItemModel[]>>;
+    loaded: boolean;
+    setLoaded: Dispatch<SetStateAction<boolean>>;
+  };
+  renderProps: {
+    page: number;
+    setPage: Dispatch<SetStateAction<number>>;
+    keyword: string;
+    setKeyword: Dispatch<SetStateAction<string>>;
+    itemType: string;
+    setItemType: Dispatch<SetStateAction<string>>;
+    scrollY: number | undefined;
+    setScrollY: Dispatch<SetStateAction<number | undefined>>;
+  };
+}) => {
   const { itemList, setItemList, loaded, setLoaded } = itemProps;
   const [itemEnd, setItemEnd] = useState(false);
 
-  // 세션 스토리지에 저장할 값
-  const [page, setPage] = useState(defaultObj.page);
-  const [keyword, setKeyword] = useState(defaultObj.keyword);
-  const [itemType, setItemType] = useState(defaultObj.itemType);
-  const [scrollY, setScrollY] = useState(defaultObj.scrollY);
-
+  const {
+    page,
+    setPage,
+    keyword,
+    setKeyword,
+    itemType,
+    setItemType,
+    scrollY,
+    setScrollY,
+  } = renderProps;
   const stateObj = {
     page,
     keyword,
@@ -41,16 +68,20 @@ const Posts = ({ itemProps }) => {
    * @param {*} storageObj Session Storage 객체
    * @returns void
    */
-  const onmountHandler = (stateObj, defaultObj, storageObj) => {
+  const onmountHandler = (
+    stateObj: ItemObj,
+    defaultObj: ItemObj,
+    storageObj: ItemObj
+  ) => {
     const currentCase = isMatchTwoObj(stateObj, storageObj);
-    const defaultCase = storageObj.itemType === undefined;
+    const defaultCase = page === -1;
     const storageCase = false === isMatchTwoObj(stateObj, storageObj);
 
     if (currentCase) {
       setLoaded(true);
       return;
     } else if (defaultCase) {
-      stateToDefault(defaultObj);
+      stateToDefault({ ...defaultObj, page: 0 });
       return;
     } else if (storageCase) {
       console.log("스토리지의 데이터를 가져왔습니다.");
@@ -66,7 +97,7 @@ const Posts = ({ itemProps }) => {
     }
   };
 
-  const isMatchTwoObj = (objA, objB) => {
+  const isMatchTwoObj = (objA: any, objB: any) => {
     for (const key in objA) {
       if (objA[key] !== objB[key]) return false;
     }
@@ -74,13 +105,14 @@ const Posts = ({ itemProps }) => {
     return true;
   };
 
-  const stateToDefault = (defaultObj) => {
+  const stateToDefault = (defaultObj: ItemObj) => {
     sessionStoreItemObj(defaultObj);
+    setPage(0);
     console.log("세션에 데이터 기본값 저장 완료");
     setLoaded(true);
   };
 
-  const storageToState = (storageObj) => {
+  const storageToState = (storageObj: ItemObj) => {
     setItemType(storageObj.itemType);
     setPage(storageObj.page);
     setKeyword(storageObj.keyword);
@@ -90,10 +122,8 @@ const Posts = ({ itemProps }) => {
   };
 
   /** -posts/에서 fetch한 response 배열을 itemList에 저장 */
-  const fetchItems = async (obj) => {
-    if (itemEnd) return;
-
-    const API_URL = process.env.REACT_APP_API;
+  const fetchItems = async (obj: ItemObj) => {
+    const API_URL = process.env.REACT_APP_API!;
     const api = setApiUri(API_URL, obj);
     console.log(api);
 
@@ -104,23 +134,24 @@ const Posts = ({ itemProps }) => {
       },
     };
 
-    let resList = await (
-      await fetch(api, options).catch((err) => console.log(err))
-    ).json();
+    let resList: ItemModel[] = await (await fetch(api, options).catch((err) =>
+      console.log(err)
+    ))!.json();
 
     if (resList.length === 0) {
       setItemEnd(true);
     } else if (page === 0) {
       setItemList(resList);
     } else if (resList) {
-      setItemList((prev) => [...prev, ...resList]);
+      setItemList((prev: ItemModel[]) => [...prev, ...resList]);
     }
   };
 
-  const setApiUri = (API_URL, obj) => {
+  const setApiUri = (API_URL: string, obj: ItemObj): string => {
+    if (obj.itemType === undefined) return "";
     const { itemType = "a", keyword = "", page } = obj;
 
-    let api = `${API_URL}/${itemType}-posts?page=${page}`;
+    let api: string = `${API_URL}/${itemType}-posts?page=${page}`;
     if (keyword) api += `&search=${keyword}`;
 
     return api;
@@ -131,7 +162,7 @@ const Posts = ({ itemProps }) => {
     onmountHandler(stateObj, defaultObj, prevObj);
 
     return () => setLoaded(false);
-  }, [itemType, keyword]);
+  }, [itemType, keyword, itemType]);
 
   return (
     <>
@@ -152,12 +183,15 @@ const Posts = ({ itemProps }) => {
           <>
             <SearchBar
               fetchItems={fetchItems}
+              stateObj={stateObj}
               keyword={keyword}
               setKeyword={setKeyword}
-              setItemList={setItemList}
-              setLoaded={setLoaded}
+              itemList={itemList}
+              setPage={setPage}
             />
             <TabBar
+              fetchItems={fetchItems}
+              stateObj={stateObj}
               setItemType={setItemType}
               itemType={itemType}
               setPage={setPage}
@@ -168,8 +202,6 @@ const Posts = ({ itemProps }) => {
               page={page}
               setPage={setPage}
               itemType={itemType}
-              setItemType={setItemType}
-              setScrollY={setScrollY}
               itemEnd={itemEnd}
               keyword={keyword}
             />

@@ -6,7 +6,7 @@ import Item from "../components/molecules/item/item";
 const Post = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const item = state.item;
+  const item: { content: string; id: number; title: string } = state.item;
 
   return (
     <div
@@ -35,7 +35,11 @@ const Post = () => {
           }
         `}
       >
-        <Item itemProps={item} />
+        <Item
+          itemProps={item}
+          itemContainerHandler={undefined}
+          clip={undefined}
+        />
       </div>
       <button
         className={css`

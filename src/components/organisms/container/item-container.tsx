@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { css } from "@emotion/css";
 
 import Item from "../../molecules/item/item";
-import { throttle } from "../../../utils/throttle-func";
 import { debounce } from "../../../utils/debounce-func";
 import { sessionStoreItemObj } from "../../../utils/session-store-item-obj";
+
+import ItemObj from "../../../models/item-obj";
 
 const itemContainerStyle = css`
   padding: 1.25rem;
@@ -23,14 +24,22 @@ const ItemContainer = ({
   itemType,
   itemEnd,
   keyword,
+}: {
+  fetchItems: (obj: ItemObj) => void;
+  itemList: { content: string; id: number; title: string }[];
+  page: number;
+  setPage: (arg0: number) => void;
+  itemType: string;
+  itemEnd: boolean;
+  keyword: string;
 }) => {
   const navigate = useNavigate();
-  const itemContainerRef = useRef();
+  const itemContainerRef = useRef(null);
 
-  const timeout = useRef(null);
+  const timeout = useRef<(id: string | number | undefined) => void>(null);
   const timerOpt = { delay: 150, timeout };
 
-  const itemContainerHandler = (item) => {
+  const itemContainerHandler = (item: {}) => {
     navigate("/post", { state: { item } });
   };
 
@@ -49,7 +58,8 @@ const ItemContainer = ({
       const threshold = 300;
       sessionStoreItemObj({ scrollY });
 
-      if (w_bottom > o_bottom - threshold && !itemEnd) {
+      // if (w_bottom > o_bottom - threshold && !itemEnd) {
+      if (w_bottom > o_bottom - threshold) {
         console.log("fetching!");
 
         setPage(page + 1);
@@ -58,7 +68,7 @@ const ItemContainer = ({
     }
   }, timerOpt);
 
-  const getItemList = (newPage) => {
+  const getItemList = (newPage: ItemObj) => {
     fetchItems(newPage);
   };
 
@@ -67,7 +77,6 @@ const ItemContainer = ({
 
     window.addEventListener("scroll", onscrollHandler);
     return () => {
-      if (timeout.current) clearTimeout(timeout);
       window.removeEventListener("scroll", onscrollHandler);
     };
   }, [itemType, page, keyword]);

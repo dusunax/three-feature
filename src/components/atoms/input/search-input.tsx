@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 
-const stSearchInput = css`
+const searchInputStyle = css`
   text-align: center;
   position: relative;
   margin-bottom: 2rem;
@@ -8,7 +8,12 @@ const stSearchInput = css`
   .icon {
     position: absolute;
     top: 50%;
-    transform: translate(0.8rem, -50%);
+    transform: translate(1rem, -50%);
+
+    img {
+      width: 15px;
+      opacity: 0.5;
+    }
   }
 
   input {
@@ -33,11 +38,17 @@ const stSearchInput = css`
   }
 `;
 
-const SearchInput = ({ inputChangeHandler, keyword }) => {
+const SearchInput = ({
+  inputChangeHandler,
+  keyword,
+}: {
+  inputChangeHandler: () => void;
+  keyword: string;
+}) => {
   return (
-    <div className={stSearchInput}>
+    <div className={searchInputStyle}>
       <label htmlFor="search" className="icon">
-        🔍
+        <img srcSet="/icons/search.svg" alt="검색 아이콘" />
       </label>
       <input
         id="search"

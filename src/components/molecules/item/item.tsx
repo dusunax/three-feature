@@ -33,11 +33,19 @@ const clipStyle = css`
   -webkit-box-orient: vertical;
 `;
 
-const Item = ({ itemContainerHandler, itemProps, clip = false }) => {
-  const { content, createdAt, id, title, type } = itemProps;
+const Item = ({
+  itemContainerHandler,
+  itemProps,
+  clip = false,
+}: {
+  itemContainerHandler: ((arg0: {}) => void) | undefined;
+  itemProps: { content: string; id: number; title: string };
+  clip: boolean | undefined;
+}) => {
+  const { content, id, title } = itemProps;
 
   return (
-    <div className={itemStyle} onClick={() => itemContainerHandler(itemProps)}>
+    <div className={itemStyle} onClick={() => itemContainerHandler!(itemProps)}>
       <h4>
         <strong className="num">{id}.</strong>
         <span className="title">{title}</span>
