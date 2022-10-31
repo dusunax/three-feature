@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 
-const Tab = (props) => {
+const Tab = (props: { textContent: string; id: number; on: boolean }) => {
   const { textContent, id, on = false } = props;
   const tabStyle = css`
     all: unset;

@@ -1,6 +1,5 @@
 function debounce(cb, timerOpt) {
-  const { delay = 1000, timeout } = timerOpt;
-
+  let { delay = 1000, timeout } = timerOpt;
   return (...args) => {
     clearTimeout(timeout.current);
     timeout.current = setTimeout(() => {

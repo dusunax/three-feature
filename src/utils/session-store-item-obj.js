@@ -5,7 +5,7 @@ const sessionStoreItemObj = (itemObj) => {
 };
 
 const sessionGetItemObj = () => {
-  const { itemType, page, keyword, scrollY } = sessionStorage;
+  let { itemType, page, keyword, scrollY } = sessionStorage;
   return { itemType, page: +page, keyword, scrollY: +scrollY };
 };
 

@@ -12,7 +12,7 @@ const TitleThree = () => {
         margin-top: 1rem;
       `}
     >
-      TitleThree
+      페이지 게시글에 대한 설명입니다.
     </h3>
   );
 };

@@ -6,17 +6,13 @@ import Item from "../components/molecules/item/item";
 const Post = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const item = state.item;
+  const item: { content: string; id: number; title: string } = state.item;
 
   return (
     <div
       className={css`
-        max-width: 1080px;
-        margin: 3rem auto;
-
-        @media (max-width: 1240px) {
-          margin: 3rem 2rem;
-        }
+        margin: 3rem 0;
+        padding: 0 2.5rem;
       `}
     >
       <div
@@ -39,7 +35,11 @@ const Post = () => {
           }
         `}
       >
-        <Item itemProps={item} />
+        <Item
+          itemProps={item}
+          itemContainerHandler={undefined}
+          clip={undefined}
+        />
       </div>
       <button
         className={css`
